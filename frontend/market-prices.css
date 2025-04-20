@@ -84,7 +84,7 @@
     margin-bottom: 2rem;
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
     gap: 1.5rem;
 }
 
@@ -93,7 +93,6 @@
     flex-direction: column;
     min-width: 200px;
     flex: 1;
-    margin-bottom: 0.5rem;
 }
 
 .filter-group label {
@@ -101,10 +100,6 @@
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
     font-weight: 500;
-    line-height: 1.4;
-    min-height: 2.8em;
-    display: flex;
-    align-items: center;
 }
 
 .filter-select {
@@ -116,14 +111,12 @@
     color: var(--text-primary);
     font-size: 1rem;
     transition: var(--transition-fast);
-    min-height: 2.5rem;
-    width: 100%;
 }
 
-.filter-select option {
-    padding: 0.5rem;
-    font-size: 1rem;
-    line-height: 1.4;
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
 }
 
 .market-actions {
@@ -136,7 +129,10 @@
     flex: 1;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
     padding: 0.75rem 1.25rem;
     border-radius: var(--border-radius-sm);
     font-family: var(--font-family);
@@ -147,16 +143,6 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 2.5rem;
-    white-space: nowrap;
-    text-align: center;
-    line-height: 1.4;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
 }
 
 .btn-primary:hover {
@@ -169,6 +155,16 @@
     background-color: white;
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-family);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .btn-secondary:hover {
@@ -468,23 +464,13 @@
         justify-content: center;
     }
     
-    .filters-panel {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filter-group {
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-
+    .filter-group, 
     .market-actions {
-        width: 100%;
-        justify-content: stretch;
+        min-width: 100%;
     }
-
-    .btn-primary, .btn-secondary {
-        width: 100%;
+    
+    .market-actions {
+        justify-content: space-between;
     }
     
     .price-amount {
@@ -530,107 +516,4 @@
 
 .chart-container canvas {
     animation: fadeIn 0.8s ease-out forwards;
-}
-
-/* Toast Styles */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background-color: #333;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 4px;
-    font-size: 14px;
-    z-index: 1000;
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
-
-/* Add these styles to prevent layout shifts */
-.navbar-menu .menu-item,
-.language-dropdown .menu-item,
-.account-icon .tooltip {
-    min-width: 80px; /* Ensure minimum width for menu items */
-    height: 40px; /* Fixed height for menu items */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap; /* Prevent text wrapping */
-    transition: all 0.3s ease;
-}
-
-/* Ensure consistent sizing for dropdowns */
-.language-dropdown,
-.account-icon {
-    min-width: 120px; /* Minimum width for dropdowns */
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Prevent content jumps in the main content area */
-.market-title,
-.market-subtitle,
-.back-button a {
-    min-height: 24px; /* Minimum height for text elements */
-    display: block;
-    transition: all 0.3s ease;
-}
-
-/* Ensure filter elements maintain consistent size */
-.filters-panel label,
-.filters-panel select {
-    min-height: 24px;
-    min-width: 120px;
-    transition: all 0.3s ease;
-}
-
-/* Add smooth transitions for all text elements */
-* {
-    transition: all 0.3s ease;
-}
-
-/* Ensure buttons maintain consistent size */
-.action-buttons button {
-    min-width: 140px;
-    height: 40px;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* Prevent chart container size changes */
-.chart-container {
-    min-height: 300px;
-    transition: all 0.3s ease;
-}
-
-/* Ensure consistent card sizes */
-.card {
-    min-height: 200px;
-    transition: all 0.3s ease;
-}
-
-/* Add loading state styles */
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-/* Ensure smooth transitions for all interactive elements */
-button,
-select,
-input,
-a {
-    transition: all 0.3s ease;
 } 

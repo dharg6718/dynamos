@@ -192,6 +192,17 @@ const AgriApp = {
             });
         });
         
+        // Setup feature cards
+        this.elements.featureCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const feature = card.getAttribute('data-feature');
+                if (feature === 'marketPrices') {
+                    window.location.href = 'market-prices.html';
+                }
+                // Add other feature card navigation here as needed
+            });
+        });
+        
         // Add scroll event for navbar and section highlighting
         window.addEventListener('scroll', () => {
             this.handleScroll();
@@ -383,26 +394,72 @@ const AgriApp = {
     },
     
     switchLanguage(lang) {
-        // Animate the transition
-        document.body.style.opacity = '0.8';
+        // Add loading state
+        document.body.classList.add('loading');
         
-        setTimeout(() => {
-            this.state.currentLanguage = lang;
+        // Update state
+        this.state.currentLanguage = lang;
+        
+        // Save to localStorage with a global key that all pages can access
+        localStorage.setItem('agri-lang', lang);
+        
+        // Set a cookie for cross-page language persistence
+        document.cookie = `agri-lang=${lang}; path=/; max-age=31536000`; // 1 year expiry
+        
+        // Batch DOM updates
+        requestAnimationFrame(() => {
+            // Update navigation items with proper text content
+            const navItems = document.querySelectorAll('.navbar-menu .menu-item');
+            navItems.forEach(item => {
+                const text = item.textContent.trim().toLowerCase();
+                if (text === 'home' || text === 'முகப்பு') {
+                    item.textContent = translations[lang].home;
+                } else if (text === 'services' || text === 'சேவைகள்') {
+                    item.textContent = translations[lang].services;
+                } else if (text === 'about' || text === 'பற்றி') {
+                    item.textContent = translations[lang].about;
+                }
+            });
+
+            // Update language dropdown with proper text
+            const languageDropdown = document.querySelector('.language-dropdown .menu-item');
+            if (languageDropdown) {
+                languageDropdown.innerHTML = `${translations[lang].languages} <i class="fas fa-chevron-down"></i>`;
+            }
+
+            // Update account icon tooltip
+            const accountIcon = document.querySelector('.account-icon .tooltip');
+            if (accountIcon) {
+                accountIcon.textContent = this.state.isLoggedIn ? translations[lang].logout : translations[lang].login;
+            }
+
+            // Update account icon title and aria-label
+            const accountIconLink = document.querySelector('.account-icon a');
+            if (accountIconLink) {
+                const loginStatus = this.state.isLoggedIn ? translations[lang].logout : translations[lang].login;
+                accountIconLink.setAttribute('title', loginStatus);
+                accountIconLink.setAttribute('aria-label', loginStatus);
+            }
+
+            // Apply language to all translatable elements
             this.updateLanguage(lang);
-            document.body.style.opacity = '1';
             
-            // Update localStorage
-            localStorage.setItem('agri-lang', lang);
-            
-            // Show user feedback
-            this.showToast(lang === 'en' ? 'Language changed to English' : 'மொழி தமிழாக மாற்றப்பட்டது');
-            
-            // Update news ticker for new language
+            // Update news ticker content
             this.updateNewsTickerForLanguage();
             
-            // Update login status with new language
-            this.updateLoginStatus();
-        }, 200);
+            // Remove loading state
+            document.body.classList.remove('loading');
+            
+            // Add a data attribute to the body to indicate the current language
+            document.body.setAttribute('data-lang', lang);
+            
+            // Dispatch a custom event that other pages can listen for
+            const event = new CustomEvent('languageChanged', { detail: { language: lang } });
+            window.dispatchEvent(event);
+            
+            // Show feedback
+            this.showToast(lang === 'en' ? 'Language changed to English' : 'மொழி தமிழாக மாற்றப்பட்டது');
+        });
     },
     
     updateLanguage(lang) {
@@ -430,13 +487,11 @@ const AgriApp = {
         }
         
         // Update cultural icon
-        const culturalIconText = document.querySelector('.icon-text');
-        const culturalIconImg = document.querySelector('.cultural-icon img');
-        if (culturalIconText) {
-            culturalIconText.textContent = lang === 'ta' ? 'தமிழ்நாடு' : 'TN';
+        if (this.elements.culturalIconText) {
+            this.elements.culturalIconText.textContent = lang === 'ta' ? 'தமிழ்நாடு' : 'TN';
         }
-        if (culturalIconImg) {
-            culturalIconImg.setAttribute('alt', translations[lang].culturalIconAlt);
+        if (this.elements.culturalIconImg) {
+            this.elements.culturalIconImg.setAttribute('alt', translations[lang].culturalIconAlt);
         }
         
         // Update hero section
@@ -484,40 +539,42 @@ const AgriApp = {
         }
         
         // Update footer links
-        const footerLinks = document.querySelectorAll('.footer-links a');
-        footerLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === 'login.html') {
-                link.textContent = translations[lang].login;
-            } else if (href === 'privacy-policy.html') {
-                link.textContent = translations[lang].privacyPolicy;
-            } else if (href === 'terms.html') {
-                link.textContent = translations[lang].termsOfService;
-            } else if (href === 'contact.html') {
-                link.textContent = translations[lang].contactUs;
-            }
-        });
+        if (this.elements.footerLinks) {
+            this.elements.footerLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === 'login.html') {
+                    link.textContent = translations[lang].login;
+                } else if (href === 'privacy-policy.html') {
+                    link.textContent = translations[lang].privacyPolicy;
+                } else if (href === 'terms.html') {
+                    link.textContent = translations[lang].termsOfService;
+                } else if (href === 'contact.html') {
+                    link.textContent = translations[lang].contactUs;
+                }
+            });
+        }
         
         // Update news ticker
         this.updateNewsTickerForLanguage();
         
         // Update account icon tooltip
-        const accountIcon = document.querySelector('.account-icon .tooltip');
-        if (accountIcon) {
-            accountIcon.textContent = this.state.isLoggedIn ? translations[lang].logout : translations[lang].login;
+        if (this.elements.accountIconTooltip) {
+            this.elements.accountIconTooltip.textContent = this.state.isLoggedIn ? translations[lang].logout : translations[lang].login;
         }
         
         // Update account icon title and aria-label
-        const accountIconLink = document.querySelector('.account-icon a');
-        if (accountIconLink) {
+        if (this.elements.accountIconLink) {
             const loginStatus = this.state.isLoggedIn ? translations[lang].logout : translations[lang].login;
-            accountIconLink.setAttribute('title', loginStatus);
-            accountIconLink.setAttribute('aria-label', loginStatus);
+            this.elements.accountIconLink.setAttribute('title', loginStatus);
+            this.elements.accountIconLink.setAttribute('aria-label', loginStatus);
         }
         
         // Save language preference
         localStorage.setItem('agri-lang', lang);
         this.state.currentLanguage = lang;
+        
+        // Force a reflow to ensure all translations are applied
+        document.body.offsetHeight;
     },
     
     setupSmoothScrolling() {

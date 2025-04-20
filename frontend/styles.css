@@ -80,7 +80,7 @@ body {
     background: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
     box-shadow: 0 4px 20px rgba(46, 125, 50, 0.1);
     z-index: 1000;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -88,7 +88,7 @@ body {
 }
 
 .navbar.scrolled {
-    padding: 0.8rem 0;
+    padding: 0.4rem 0;
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 4px 20px rgba(46, 125, 50, 0.15);
 }
@@ -106,6 +106,18 @@ body {
     display: flex;
     align-items: center;
     gap: 2.5rem;
+}
+
+.navbar-menu .menu-item,
+.language-dropdown .menu-item,
+.account-icon .tooltip {
+    min-width: 80px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
 .menu-item {
@@ -142,6 +154,11 @@ body {
 .language-dropdown {
     position: relative;
     display: inline-block;
+    min-width: 120px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dropdown-content {
@@ -198,6 +215,14 @@ body {
 
 .lang-option:hover::before {
     width: 100%;
+}
+
+.account-icon {
+    min-width: 120px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .account-icon a {

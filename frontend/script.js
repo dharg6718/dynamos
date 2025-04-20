@@ -440,16 +440,32 @@ const AgriApp = {
         
         // Update page title and meta description
         document.title = translations[lang].pageTitle;
-        const metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription) {
-            metaDescription.setAttribute('content', translations[lang].pageDescription);
-        }
+        document.querySelector('meta[name="description"]').setAttribute('content', translations[lang].pageDescription);
         
-        // Update navigation items
-        this.elements.navItems.forEach((item, index) => {
-            const key = item.textContent.trim().toLowerCase();
-            if (translations[lang][key]) {
-                item.textContent = translations[lang][key];
+        // Update all elements with data-lang attribute
+        document.querySelectorAll('[data-lang]').forEach(item => {
+            const translationKey = item.getAttribute('data-lang');
+            if (translationKey && translations[lang][translationKey]) {
+                // Preserve any icons or special elements
+                const icon = item.querySelector('i');
+                const tooltip = item.querySelector('.tooltip');
+                
+                // Update the text content
+                if (item.tagName === 'A' && item.classList.contains('menu-item')) {
+                    // For menu items, preserve the href and icon
+                    const href = item.getAttribute('href');
+                    item.innerHTML = translations[lang][translationKey];
+                    if (href) item.setAttribute('href', href);
+                    if (icon) item.appendChild(icon);
+                } else {
+                    item.textContent = translations[lang][translationKey];
+                    if (icon) item.appendChild(icon);
+                }
+                
+                // Update tooltip if it exists
+                if (tooltip) {
+                    tooltip.textContent = translations[lang][translationKey];
+                }
             }
         });
         
@@ -513,17 +529,10 @@ const AgriApp = {
         }
         
         // Update footer links
-        const footerLinks = document.querySelectorAll('.footer-links a');
-        footerLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === 'login.html') {
-                link.textContent = translations[lang].login;
-            } else if (href === 'privacy-policy.html') {
-                link.textContent = translations[lang].privacyPolicy;
-            } else if (href === 'terms.html') {
-                link.textContent = translations[lang].termsOfService;
-            } else if (href === 'contact.html') {
-                link.textContent = translations[lang].contactUs;
+        document.querySelectorAll('.footer-links a[data-lang]').forEach(link => {
+            const translationKey = link.getAttribute('data-lang');
+            if (translationKey && translations[lang][translationKey]) {
+                link.textContent = translations[lang][translationKey];
             }
         });
         

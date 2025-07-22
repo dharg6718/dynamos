@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../Frontend')));
 
 // Mock data storage
 let mockData = {
@@ -86,18 +88,12 @@ function generateDistrictData(crop) {
   
   return districtData;
 }
-this.charts.trendChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
-        datasets: [{
-            label: 'Test Data',
-            data: [10, 20, 15, 25, 30],
-            borderColor: 'green'
-        }]
-    }
-});
+
 // API Routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend/index.html'));
+});
+
 app.get('/api/prices', (req, res) => {
   const { district, crop } = req.query;
   

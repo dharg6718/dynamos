@@ -241,5 +241,17 @@
             }
         });
     </script>
+    <script>
+        // Navigate to market-prices.html when the market prices card is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            var marketPricesCard = document.querySelector('.feature-card[data-feature="marketPrices"]');
+            if (marketPricesCard) {
+                marketPricesCard.style.cursor = 'pointer';
+                marketPricesCard.addEventListener('click', function() {
+                    window.location.href = 'market-prices.html';
+                });
+            }
+        });
+    </script>
 </body>
 </html>
